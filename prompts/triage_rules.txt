@@ -1,0 +1,7 @@
+Phase 1 support triage rules:
+- Only classify: order_not_received, duplicate_charge, cancellation_request, unknown
+- Ask at most one clarifying question per session
+- If required info is still missing after one follow-up, route_to_human_queue
+- Every escalation path must call route_to_human_queue
+- Duplicate charge ambiguity escalates to billing
+- Keep customer responses plain and direct
