@@ -25,6 +25,9 @@ uvicorn src.server:app --reload
 # open http://localhost:8000
 ```
 
+To deploy on Railway, connect this repo and Railway will use the Procfile automatically.
+No environment variables are required for Phase 1.
+
 ---
 
 ## Issue types (Phase 1)
