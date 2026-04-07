@@ -6,174 +6,391 @@
     <title>Support Triage Starter</title>
     <style>
       :root {
-        --bg: #f5efe4;
-        --panel: #fffaf2;
-        --ink: #1f2a1f;
-        --muted: #6a6f61;
+        --bg: #f4efe6;
+        --panel: #fdfaf5;
+        --ink: #1a231a;
+        --muted: #6b7066;
+        --subtle: #9ea89a;
         --accent: #0f766e;
-        --border: #d8ccb9;
+        --border: #ddd6c6;
+        --border-focus: #0f766e;
+        --mono: ui-monospace, "SFMono-Regular", Menlo, Monaco, "Cascadia Mono", monospace;
       }
 
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
 
       body {
-        margin: 0;
-        font-family: Georgia, "Times New Roman", serif;
-        background:
-          radial-gradient(circle at top left, rgba(15, 118, 110, 0.12), transparent 35%),
-          linear-gradient(180deg, #f8f4ec 0%, var(--bg) 100%);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+        font-size: 15px;
+        line-height: 1.5;
         color: var(--ink);
+        background: linear-gradient(160deg, #f8f4ec 0%, var(--bg) 100%);
+        min-height: 100vh;
       }
 
       main {
-        max-width: 960px;
+        max-width: 980px;
         margin: 0 auto;
-        padding: 32px 20px 48px;
+        padding: 44px 24px 72px;
       }
 
-      .hero {
-        margin-bottom: 24px;
+      /* ── Header ──────────────────────────────────────────── */
+
+      .header {
+        margin-bottom: 32px;
       }
 
-      .hero h1 {
-        margin: 0 0 8px;
-        font-size: clamp(2rem, 4vw, 3.5rem);
+      .header h1 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        margin-bottom: 6px;
       }
 
-      .hero p {
-        margin: 0;
+      .header p {
+        font-size: 0.875rem;
         color: var(--muted);
-        max-width: 56rem;
-        line-height: 1.5;
+        max-width: 56ch;
       }
+
+      /* ── Grid ────────────────────────────────────────────── */
 
       .grid {
         display: grid;
-        gap: 20px;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
       }
+
+      .full-width {
+        grid-column: 1 / -1;
+      }
+
+      @media (max-width: 620px) {
+        .grid { grid-template-columns: 1fr; }
+        .full-width { grid-column: 1; }
+      }
+
+      /* ── Card ────────────────────────────────────────────── */
 
       .card {
         background: var(--panel);
         border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 18px;
-        box-shadow: 0 10px 30px rgba(31, 42, 31, 0.06);
+        border-radius: 10px;
+        padding: 20px;
       }
 
-      textarea,
-      pre,
-      button {
-        font: inherit;
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
       }
+
+      .card-label {
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      /* ── Status badge ────────────────────────────────────── */
+
+      .badge {
+        display: none;
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        padding: 2px 7px;
+        border-radius: 3px;
+      }
+
+      .badge.visible { display: inline-block; }
+
+      .badge.resolved  { background: #d1fae5; color: #065f46; }
+      .badge.escalated { background: #fef3c7; color: #92400e; }
+      .badge.follow-up { background: #e0f2fe; color: #0369a1; }
+
+      /* ── Textarea ────────────────────────────────────────── */
 
       textarea {
         width: 100%;
-        min-height: 180px;
-        border-radius: 12px;
+        min-height: 130px;
         border: 1px solid var(--border);
-        padding: 12px;
+        border-radius: 6px;
+        padding: 10px 12px;
         background: #fff;
-      }
-
-      button {
-        margin-top: 12px;
-        border: 0;
-        border-radius: 999px;
-        padding: 10px 18px;
-        background: var(--accent);
-        color: white;
-        cursor: pointer;
-      }
-
-      .label {
-        display: inline-block;
-        margin-bottom: 8px;
+        font-family: inherit;
         font-size: 0.9rem;
-        color: var(--muted);
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
+        color: var(--ink);
+        resize: vertical;
+        outline: none;
+        line-height: 1.5;
+        transition: border-color 0.15s;
       }
 
-      pre {
-        margin: 0;
-        white-space: pre-wrap;
-        word-break: break-word;
-        background: #fbf7f0;
+      textarea:focus { border-color: var(--border-focus); }
+
+      textarea::placeholder { color: var(--subtle); }
+
+      /* ── Example chips ───────────────────────────────────── */
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 10px;
+      }
+
+      .chip {
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        padding: 3px 9px;
         border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 12px;
-        min-height: 180px;
+        border-radius: 4px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        transition: border-color 0.15s, color 0.15s;
+        line-height: 1.6;
+      }
+
+      .chip:hover { border-color: var(--accent); color: var(--accent); }
+
+      /* ── Actions ─────────────────────────────────────────── */
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .btn-primary {
+        border: none;
+        border-radius: 6px;
+        padding: 8px 18px;
+        background: var(--accent);
+        color: #fff;
+        font-family: inherit;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+
+      .btn-primary:hover:not(:disabled) { opacity: 0.88; }
+
+      .btn-primary:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .btn-secondary {
+        display: none;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 8px 14px;
+        background: transparent;
+        color: var(--muted);
+        font-family: inherit;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: border-color 0.15s, color 0.15s;
+      }
+
+      .btn-secondary:hover { border-color: #b0a898; color: var(--ink); }
+
+      .btn-secondary.visible { display: inline-block; }
+
+      /* ── Customer response ───────────────────────────────── */
+
+      .response-body {
+        min-height: 130px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 10px 12px;
+        background: #fff;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: var(--ink);
+        word-break: break-word;
+      }
+
+      .response-body.empty {
+        color: var(--subtle);
+        font-style: italic;
+      }
+
+      /* ── JSON output ─────────────────────────────────────── */
+
+      .json-wrap {
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #faf7f2;
+        padding: 12px 14px;
+        overflow-x: auto;
+      }
+
+      .json-wrap pre {
+        font-family: var(--mono);
+        font-size: 12px;
+        line-height: 1.65;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+        color: var(--ink);
+        min-height: 80px;
+      }
+
+      .json-wrap.empty pre {
+        color: var(--subtle);
+        font-family: inherit;
+        font-style: italic;
+        font-size: 0.875rem;
       }
     </style>
   </head>
   <body>
     <main>
-      <section class="hero">
+
+      <header class="header">
         <h1>Support Triage Starter</h1>
-        <p>
-          A narrow Phase 1 reference flow for issue classification, one-step missing-info gathering,
-          mock tool calls, escalation, logging, and structured session output.
-        </p>
-      </section>
+        <p>Enter a customer message. The agent classifies the issue, calls a mock backend tool, and returns a structured response.</p>
+      </header>
 
       <section class="grid">
+
+        <!-- Input -->
         <div class="card">
-          <span class="label">Customer Message</span>
-          <textarea id="message" placeholder="Example: I was charged twice on alice@example.com"></textarea>
-          <button id="submit">Run Triage</button>
+          <div class="card-header">
+            <span class="card-label">Customer Message</span>
+          </div>
+          <textarea
+            id="message"
+            placeholder="Describe the issue. Include an order ID, email, or charge ID if you have one."
+          ></textarea>
+          <div class="chips">
+            <button class="chip" data-prompt="My order ord_5001 has not arrived yet.">order not received</button>
+            <button class="chip" data-prompt="I was charged twice on alice@example.com.">duplicate charge</button>
+            <button class="chip" data-prompt="Please cancel my account. My email is alice@example.com.">cancellation</button>
+          </div>
+          <div class="actions">
+            <button class="btn-primary" id="submit">Run Triage</button>
+            <button class="btn-secondary" id="reset">New session</button>
+          </div>
         </div>
 
+        <!-- Customer Response -->
         <div class="card">
-          <span class="label">Customer-Facing Output</span>
-          <pre id="customerResponse">Waiting for input.</pre>
+          <div class="card-header">
+            <span class="card-label">Customer Response</span>
+            <span class="badge" id="statusBadge"></span>
+          </div>
+          <div class="response-body empty" id="customerResponse">Waiting for input.</div>
         </div>
 
-        <div class="card" style="grid-column: 1 / -1;">
-          <span class="label">Structured Output</span>
-          <pre id="jsonOutput">No session yet.</pre>
+        <!-- Structured Output -->
+        <div class="card full-width">
+          <div class="card-header">
+            <span class="card-label">Structured Output</span>
+          </div>
+          <div class="json-wrap empty" id="jsonWrap">
+            <pre id="jsonOutput">No session yet.</pre>
+          </div>
         </div>
+
       </section>
     </main>
 
     <script>
-      const messageEl = document.getElementById("message");
+      const messageEl        = document.getElementById("message");
       const customerResponseEl = document.getElementById("customerResponse");
-      const jsonOutputEl = document.getElementById("jsonOutput");
-      const submitEl = document.getElementById("submit");
+      const jsonOutputEl     = document.getElementById("jsonOutput");
+      const jsonWrapEl       = document.getElementById("jsonWrap");
+      const submitEl         = document.getElementById("submit");
+      const resetEl          = document.getElementById("reset");
+      const statusBadgeEl    = document.getElementById("statusBadge");
 
       let followUpState = null;
-      let sessionId = null;
+      let sessionId     = null;
+
+      // Example chips
+      document.querySelectorAll(".chip").forEach(chip => {
+        chip.addEventListener("click", () => {
+          messageEl.value = chip.dataset.prompt;
+          messageEl.focus();
+        });
+      });
+
+      // Reset
+      resetEl.addEventListener("click", () => {
+        followUpState = null;
+        sessionId     = null;
+        messageEl.value = "";
+        customerResponseEl.textContent  = "Waiting for input.";
+        customerResponseEl.className    = "response-body empty";
+        jsonOutputEl.textContent        = "No session yet.";
+        jsonWrapEl.className            = "json-wrap empty";
+        statusBadgeEl.className         = "badge";
+        statusBadgeEl.textContent       = "";
+        resetEl.classList.remove("visible");
+        submitEl.textContent            = "Run Triage";
+        messageEl.focus();
+      });
+
+      function setStatus(key) {
+        const labels = { resolved: "Resolved", escalated: "Escalated", "follow-up": "Follow-up" };
+        statusBadgeEl.className   = "badge visible " + key;
+        statusBadgeEl.textContent = labels[key] || key;
+      }
 
       submitEl.addEventListener("click", async () => {
         const message = messageEl.value.trim();
         if (!message) return;
 
+        submitEl.disabled    = true;
+        submitEl.textContent = "Running\u2026";
+
         const payload = { message, session_id: sessionId, follow_up_state: followUpState };
-        const response = await fetch("/triage", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
 
-        const data = await response.json();
+        try {
+          const res  = await fetch("/triage", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json();
 
-        if (data.needs_follow_up) {
-          followUpState = data.follow_up_state;
-          sessionId = data.follow_up_state.session_id;
-          customerResponseEl.textContent = data.follow_up_question;
-          jsonOutputEl.textContent = JSON.stringify(data, null, 2);
-          messageEl.value = "";
-          return;
+          if (data.needs_follow_up) {
+            followUpState = data.follow_up_state;
+            sessionId     = data.follow_up_state.session_id;
+            customerResponseEl.textContent = data.follow_up_question;
+            customerResponseEl.className   = "response-body";
+            jsonOutputEl.textContent       = JSON.stringify(data, null, 2);
+            jsonWrapEl.className           = "json-wrap";
+            setStatus("follow-up");
+            messageEl.value      = "";
+            submitEl.textContent = "Send Reply";
+          } else {
+            followUpState = null;
+            sessionId     = data.session_output.session_id;
+            customerResponseEl.textContent = data.session_output.customer_response;
+            customerResponseEl.className   = "response-body";
+            jsonOutputEl.textContent       = JSON.stringify(data.session_output, null, 2);
+            jsonWrapEl.className           = "json-wrap";
+            setStatus(data.session_output.resolution_status);
+            messageEl.value      = "";
+            submitEl.textContent = "Run Triage";
+            resetEl.classList.add("visible");
+          }
+        } catch (_) {
+          customerResponseEl.textContent = "Request failed. Is the server running?";
+          customerResponseEl.className   = "response-body";
         }
 
-        followUpState = null;
-        sessionId = data.session_output.session_id;
-        customerResponseEl.textContent = data.session_output.customer_response;
-        jsonOutputEl.textContent = JSON.stringify(data.session_output, null, 2);
-        messageEl.value = "";
+        submitEl.disabled = false;
       });
     </script>
   </body>
