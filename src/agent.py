@@ -119,7 +119,8 @@ class TriageAgent:
         message: str,
         state: FollowUpState | None,
     ) -> tuple[IssueType, ConfidenceLevel]:
-        normalized = message.lower()
+        # Treat typographic apostrophes like keyboard apostrophes for phrase matching.
+        normalized = message.lower().replace("’", "'").replace("‘", "'")
 
         if state is not None and state.issue_type != IssueType.UNKNOWN:
             return state.issue_type, state.classification_confidence

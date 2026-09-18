@@ -25,6 +25,29 @@ class Phase1Tests(unittest.TestCase):
         self.assertEqual(second.session_output.tool_called, "route_to_human_queue")
         self.assertEqual(second.session_output.escalation.reason, "Missing required info after one follow-up")
 
+    def test_order_contraction_apostrophes_follow_up_then_escalate(self) -> None:
+        for apostrophe in ("'", "’", "‘"):
+            with self.subTest(apostrophe=apostrophe):
+                first = self.agent.handle(
+                    TriageRequest(message=f"My order hasn{apostrophe}t arrived.")
+                )
+                self.assertIsInstance(first, FollowUpResponse)
+                self.assertEqual(first.follow_up_state.issue_type.value, "order_not_received")
+                self.assertIn("order ID", first.follow_up_question)
+                second = self.agent.handle(
+                    TriageRequest(
+                        message="I still do not have it.",
+                        session_id=first.follow_up_state.session_id,
+                        follow_up_state=first.follow_up_state,
+                    )
+                )
+                self.assertIsInstance(second, FinalResponse)
+                self.assertEqual(second.session_output.tool_called, "route_to_human_queue")
+                self.assertEqual(
+                    second.session_output.escalation.reason,
+                    "Missing required info after one follow-up",
+                )
+
     def test_duplicate_charge_ambiguity_routes_to_human_queue(self) -> None:
         response = self.agent.handle(
             TriageRequest(message="I was charged twice on bob@example.com and need help.")
